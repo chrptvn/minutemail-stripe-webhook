@@ -1,5 +1,6 @@
 import sys
 
+import requests
 from fastapi import FastAPI, status
 from typing import Dict
 import logging
@@ -12,8 +13,16 @@ logging.basicConfig(
 
 app = FastAPI()
 
+
 @app.post("/v1/stripe_webhook", status_code=status.HTTP_200_OK)
 def keycloak_webhook(data: Dict):
-    logging.info(f"Received webhook data: {data}")
-
+    customer_id = data['data']['object']['customer']
+    if data['type'] == 'customer.subscription.created':
+        requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/activate",
+                      json={"customer_id": customer_id},
+                      headers={"Content-Type": "application/json"})
+    elif data['type'] == 'customer.subscription.deleted':
+        requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/deactivate",
+                      json={"customer_id": customer_id},
+                      headers={"Content-Type": "application/json"})
     return {"status": "success", "message": "Webhook processed successfully"}
