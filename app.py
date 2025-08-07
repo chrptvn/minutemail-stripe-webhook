@@ -18,10 +18,14 @@ app = FastAPI()
 def keycloak_webhook(data: Dict):
     customer_id = data['data']['object']['customer']
     if data['type'] == 'customer.subscription.created':
+        payload = {
+          "customer_id": customer_id,
+          "product_id": data['data']['object']['items']['data'][0]['plan']['product']
+        }
+        logging.info(f"Activating membership {payload}")
         requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/activate",
-                      json={"customer_id": customer_id, "product_id": data['data']['object']['items']['data'][0]['price']['product']},
+                      json=payload,
                       headers={"Content-Type": "application/json"})
-        logging.info(f"Activated membership for customer_id: {customer_id}")
     elif data['type'] == 'customer.subscription.deleted':
         requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/deactivate",
                       json={"customer_id": customer_id, "product_id": data['data']['object']['items']['data'][0]['price']['product']},
