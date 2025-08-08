@@ -32,4 +32,14 @@ def keycloak_webhook(data: Dict):
                       json={"customer_id": customer_id, "product_id": data['data']['object']['items']['data'][0]['price']['product']},
                       headers={"Content-Type": "application/json"})
         logging.info(f"Deactivated membership for customer_id: {customer_id}")
+    elif data['type'] == 'customer.subscription.updated':
+        payload = {
+          "subscription_id": data['data']['object']['id'],
+          "customer_id": customer_id,
+          "product_id": data['data']['object']['items']['data'][0]['plan']['product']
+        }
+        logging.info(f"Updating membership {payload}")
+        requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/activate",
+                      json=payload,
+                      headers={"Content-Type": "application/json"})
     return {"status": "success", "message": "Webhook processed successfully"}
