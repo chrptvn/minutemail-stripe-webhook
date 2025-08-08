@@ -21,7 +21,8 @@ def keycloak_webhook(data: Dict):
         payload = {
           "subscription_id": data['data']['object']['id'],
           "customer_id": customer_id,
-          "product_id": data['data']['object']['items']['data'][0]['plan']['product']
+          "product_id": data['data']['object']['items']['data'][0]['plan']['product'],
+          "subscription_item_id": data['data']['object']['items']['data'][0]['id'],
         }
         logging.info(f"Activating membership {payload}")
         requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/activate",
@@ -36,7 +37,8 @@ def keycloak_webhook(data: Dict):
         payload = {
           "subscription_id": data['data']['object']['id'],
           "customer_id": customer_id,
-          "product_id": data['data']['object']['items']['data'][0]['plan']['product']
+          "product_id": data['data']['object']['items']['data'][0]['plan']['product'],
+          "subscription_item_id": data['data']['object']['items']['data'][0]['id'],
         }
         logging.info(f"Updating membership {payload}")
         requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/activate",
