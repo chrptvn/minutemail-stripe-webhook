@@ -42,7 +42,7 @@ def keycloak_webhook(data: Dict):
                       json=payload,
                       headers={"Content-Type": "application/json"})
     elif data['type'] == 'customer.subscription.updated':
-        requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/update",
+        requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/activate",
                       json=payload,
                       headers={"Content-Type": "application/json"})
     return {"status": "success", "message": "Webhook processed successfully"}
