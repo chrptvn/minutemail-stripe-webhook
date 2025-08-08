@@ -32,7 +32,7 @@ def keycloak_webhook(data: Dict):
                       json=payload,
                       headers={"Content-Type": "application/json"})
     elif data['type'] == 'customer.subscription.paused':
-        requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/cancel_premium",
+        requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/deactivate",
                       json=payload,
                       headers={"Content-Type": "application/json"})
     elif data['type'] == 'customer.subscription.resumed':
