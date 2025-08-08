@@ -25,7 +25,11 @@ def keycloak_webhook(data: Dict):
     logging.info(f"Received webhook: {data['type']}")
     logging.info(f"Payload: {payload}")
 
-    if data['type'] == 'customer.subscription.created':
+    if data['type'] in [
+        'customer.subscription.created',
+        'customer.subscription.resumed',
+        'customer.subscription.updated'
+    ]:
         requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/activate",
                       json=payload,
                       headers={"Content-Type": "application/json"})
@@ -35,14 +39,6 @@ def keycloak_webhook(data: Dict):
                       headers={"Content-Type": "application/json"})
     elif data['type'] == 'customer.subscription.paused':
         requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/deactivate",
-                      json=payload,
-                      headers={"Content-Type": "application/json"})
-    elif data['type'] == 'customer.subscription.resumed':
-        requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/activate",
-                      json=payload,
-                      headers={"Content-Type": "application/json"})
-    elif data['type'] == 'customer.subscription.updated':
-        requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/activate",
                       json=payload,
                       headers={"Content-Type": "application/json"})
     return {"status": "success", "message": "Webhook processed successfully"}
