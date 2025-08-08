@@ -19,6 +19,7 @@ def keycloak_webhook(data: Dict):
     customer_id = data['data']['object']['customer']
     if data['type'] == 'customer.subscription.created':
         payload = {
+          "subscription_id": data['data']['object']['id'],
           "customer_id": customer_id,
           "product_id": data['data']['object']['items']['data'][0]['plan']['product']
         }
