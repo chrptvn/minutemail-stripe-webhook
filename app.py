@@ -22,6 +22,8 @@ def keycloak_webhook(data: Dict):
         "product_id": data['data']['object']['items']['data'][0]['plan']['product'],
         "subscription_item_id": data['data']['object']['items']['data'][0]['id'],
     }
+    logging.info(f"Received webhook: {data['type']}")
+    logging.info(f"Payload: {payload}")
 
     if data['type'] == 'customer.subscription.created':
         requests.post("http://minutemail-subscription-api.minutemail.svc.cluster.local:8080/v1/membership/activate",
